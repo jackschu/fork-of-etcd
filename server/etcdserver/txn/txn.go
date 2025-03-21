@@ -21,6 +21,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/antithesishq/antithesis-sdk-go/assert"
 	"go.uber.org/zap"
 
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
@@ -307,6 +308,7 @@ func txn(ctx context.Context, lg *zap.Logger, txnWrite mvcc.TxnWrite, rt *pb.Txn
 	_, err := executeTxn(ctx, lg, txnWrite, rt, txnPath, txnResp)
 	if err != nil {
 		if isWrite {
+			assert.Reachable("we should be able to cause txn writes to fail", nil)
 			// CAUTION: When a txn performing write operations starts, we always expect it to be successful.
 			// If a write failure is seen we SHOULD NOT try to recover the server, but crash with a panic to make the failure explicit.
 			// Trying to silently recover (e.g by ignoring the failed txn or calling txn.End() early) poses serious risks:
